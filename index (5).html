@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EvoBank</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    // Function to display the selected section
+    function showSection(sectionId) {
+      // Hide all sections first
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(section => section.style.display = 'none');
+
+      // Display the clicked section
+      const activeSection = document.getElementById(sectionId);
+      activeSection.style.display = 'block';
+    }
+  </script>
+</head>
+<body>
+  <!-- Header with Logo -->
+  <header>
+    <div class="logo">
+      <span>Evo</span>Bank
+    </div>
+    <!-- Navigation Menu -->
+    <nav>
+      <ul>
+        <li><a href="javascript:void(0);" onclick="showSection('about')">About</a></li>
+        <li><a href="javascript:void(0);" onclick="showSection('calculator')">Interactive Financial Calculator</a></li>
+        <li><a href="javascript:void(0);" onclick="showSection('faq')">FAQ & Help Center</a></li>
+        <li><a href="javascript:void(0);" onclick="showSection('live-chat')">Live Chat Support</a></li>
+        <li><a href="javascript:void(0);" onclick="showSection('testimonials')">User Testimonials</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Content Sections -->
+  <section id="about" class="section" style="display: block;">
+    <h1>About EvoBank</h1>
+    <p>Welcome to EvoBank, a modern financial institution founded by Saltanat Zhumazhanova and Birnara Berdaliyeva. Our mission is to bring innovative financial solutions and a customer-first approach to everyone, no matter where they are in the world. We believe that banking should be easier, smarter, and more accessible to all.</p>
+    
+    <h2>Our Founders</h2>
+    <div class="founders">
+        <div class="founder">
+            <img src="sally.jpeg" alt="Saltanat Zhumazhanova" class="founder-img">
+            <p><strong>Saltanat Zhumazhanova</strong> - Co-founder & CEO</p>
+        </div>
+        <div class="founder">
+            <img src="birnara.jpg" alt="Birnara Berdaliyeva" class="founder-img">
+            <p><strong>Birnara Berdaliyeva</strong> - Co-founder & CTO</p>
+        </div>
+    </div>
+    
+    <h2>Our Mission</h2>
+    <p>At EvoBank, our mission is to revolutionize the way people think about and experience banking. By using cutting-edge digital tools and providing exceptional customer support, we are committed to helping individuals and businesses alike achieve their financial goals.</p>
+    
+    <h2>Our Goal</h2>
+    <p>Our goal is to make banking more accessible, efficient, and secure for everyone. EvoBank is here to offer innovative services that meet the diverse needs of our customers, whether it’s personal banking, business solutions, or financial planning.</p>
+
+    <h2>Our Unique Features</h2>
+    <ul>
+        <li><strong>Advanced Security:</strong> We prioritize your safety with encrypted transactions and multi-factor authentication.</li>
+        <li><strong>Customer-Centric Approach:</strong> Our support team is always ready to assist, ensuring that you receive personalized attention whenever you need it.</li>
+        <li><strong>Innovation:</strong> We offer state-of-the-art digital tools to make banking easier and more intuitive, all from the comfort of your device.</li>
+        <li><strong>Accessibility:</strong> With our fully online services, EvoBank is accessible to everyone, everywhere.</li>
+    </ul>
+
+    <p>Join us in transforming the banking industry and experience the future of finance today with EvoBank!</p>
+    <hr>
+</section>
+
+<section id="calculator" class="section" style="display: none;">
+    <h1>Interactive Financial Calculator</h1>
+    <p>Welcome to EvoBank's Interactive Financial Calculator. Our tool is designed to help you easily calculate loan amounts, interest rates, repayment schedules, and more. By entering some basic information, you can get a quick estimate of your loan repayments, enabling you to make better financial decisions.</p>
+
+    <h2>How It Works</h2>
+    <p>To use the calculator, simply fill in the fields below, including the loan amount, interest rate, and loan term. Once you've entered your details, click the "Calculate" button, and we'll provide an estimate of your monthly payments, total interest, total repayment, and a visual breakdown of the loan statistics.</p>
+
+    <div class="calculator-form">
+        <form id="calculator-form">
+            <div class="form-group">
+                <label for="loan-amount">Loan Amount ($):</label>
+                <input type="number" id="loan-amount" name="loan-amount" placeholder="Enter loan amount" required>
+            </div>
+
+            <div class="form-group">
+                <label for="interest-rate">Interest Rate (%):</label>
+                <input type="number" id="interest-rate" name="interest-rate" placeholder="Enter interest rate" required>
+            </div>
+
+            <div class="form-group">
+                <label for="loan-term">Loan Term (years):</label>
+                <input type="number" id="loan-term" name="loan-term" placeholder="Enter loan term in years" required>
+            </div>
+
+            <button type="button" onclick="calculateLoan()">Calculate</button>
+        </form>
+    </div>
+
+    <div id="calculator-results" style="display: none;">
+        <h3>Loan Details</h3>
+        <p id="monthly-payment">Monthly Payment: $0.00</p>
+        <p id="total-repayment">Total Repayment: $0.00</p>
+        <p id="total-interest">Total Interest: $0.00</p>
+
+        <!-- Pie Chart Container -->
+        <h3>Loan Statistics</h3>
+        <canvas id="loan-chart" width="300" height="300"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function calculateLoan() {
+            // Get values from the input fields
+            const loanAmount = parseFloat(document.getElementById('loan-amount').value);
+            const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100 / 12; // Monthly interest rate
+            const loanTerm = parseFloat(document.getElementById('loan-term').value) * 12; // Loan term in months
+
+            // Check if inputs are valid
+            if (isNaN(loanAmount) || isNaN(interestRate) || isNaN(loanTerm) || loanAmount <= 0 || interestRate <= 0 || loanTerm <= 0) {
+                alert('Please enter valid values for all fields.');
+                return;
+            }
+
+            // Calculate monthly payment
+            const x = Math.pow(1 + interestRate, loanTerm);
+            const monthlyPayment = (loanAmount * interestRate * x) / (x - 1);
+
+            // Calculate total repayment and total interest
+            const totalRepayment = monthlyPayment * loanTerm;
+            const totalInterest = totalRepayment - loanAmount;
+
+            // Display results
+            document.getElementById('monthly-payment').textContent = 'Monthly Payment: $' + monthlyPayment.toFixed(2);
+            document.getElementById('total-repayment').textContent = 'Total Repayment: $' + totalRepayment.toFixed(2);
+            document.getElementById('total-interest').textContent = 'Total Interest: $' + totalInterest.toFixed(2);
+
+            // Show the result section
+            document.getElementById('calculator-results').style.display = 'block';
+
+            // Data for pie chart
+            const loanData = {
+                labels: ['Total Interest', 'Principal Repayment'],
+                datasets: [{
+                    data: [totalInterest, loanAmount],
+                    backgroundColor: ['#FF5733', '#4CAF50'],
+                    hoverBackgroundColor: ['#FF3D00', '#388E3C'],
+                    borderColor: ['#FFF', '#FFF'],
+                    borderWidth: 1
+                }]
+            };
+
+            // Create pie chart
+            const ctx = document.getElementById('loan-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: loanData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return tooltipItem.label + ': $' + tooltipItem.raw.toFixed(2);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</section>
+
+  <section id="faq" class="section" style="display: none;">
+    <h1>FAQ & Help Center</h1>
+    <p>Welcome to the FAQ & Help Center. Here, we answer the most common questions our customers ask. If you can't find the answer you're looking for, feel free to contact our support team for further assistance.</p>
+    
+    <h2>Frequently Asked Questions</h2>
+    
+    <div class="faq-item">
+        <h3>1. How can I open a new account with EvoBank?</h3>
+        <p>Opening an account with EvoBank is simple! Just visit our sign-up page, fill in your details, and follow the steps to complete your registration. You will need a valid ID and proof of address.</p>
+    </div>
+    
+    <div class="faq-item">
+        <h3>2. What services does EvoBank offer?</h3>
+        <p>EvoBank offers a variety of services, including savings accounts, personal loans, business banking, online banking, and an interactive financial calculator to help you manage your finances easily.</p>
+    </div>
+    
+    <div class="faq-item">
+        <h3>3. Is my information secure with EvoBank?</h3>
+        <p>Yes, your information is completely secure with EvoBank. We use the latest encryption technology to protect your personal and financial data. Security is our top priority.</p>
+    </div>
+    
+    <div class="faq-item">
+        <h3>4. How do I reset my password?</h3>
+        <p>If you've forgotten your password, simply click the "Forgot Password" link on the login page. Follow the instructions sent to your email to reset your password and regain access to your account.</p>
+    </div>
+    
+    <div class="faq-item">
+        <h3>5. Can I access my account from any device?</h3>
+        <p>Yes, EvoBank provides online banking services, allowing you to access your account from any device with an internet connection. Simply log in securely using your credentials from a desktop or mobile device.</p>
+    </div>
+
+</section>
+
+<section id="live-chat" class="section">
+    <h1>Live Chat Support</h1>
+    <p>Our Live Chat is available 24/7 to assist you with any questions or concerns you may have regarding your account or services. Whether you need help with making payments, understanding your statements, or anything else, our support team is ready to help you in real-time.</p>
+    
+    <h2>How It Works:</h2>
+    <p>To start a conversation with one of our support agents, simply click on the "Start Chat" button. Our team is trained to provide quick and accurate answers, ensuring you get the help you need without any delays.</p>
+    
+    <button id="start-chat-button" onclick="window.open('https://zoom.us/j/your-zoom-link', '_blank')">Start Chat</button>
+    
+    <h3>Need Help? Contact Us:</h3>
+    <p>If you prefer, you can also reach us through the following channels:</p>
+    <ul>
+        <li><strong>Email:</strong> support@evobank.com</li>
+        <li><strong>Phone:</strong> +7 723 296 3425</li>
+    </ul>
+
+    <div style="text-align: center; margin: 20px 0;">
+        <img src="chat-support-image.jpg" alt="Live Chat Support" width="400" />
+    </div>
+    
+</section>
+
+
+<section id="testimonials" class="section" style="display: none;">
+    <h1>User Testimonials</h1>
+    <p>At EvoBank, we believe in providing the best banking experience. But don't just take our word for it—hear what our customers have to say! These are real success stories from users who have experienced the ease and benefits of banking with us.</p>
+    
+    <style>
+        .testimonial {
+            text-align: center;
+            max-width: 300px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .testimonial-img {
+            width: 100px; /* Fixed width */
+            height: 100px; /* Fixed height */
+            object-fit: cover; /* Ensures image fills the dimensions without distortion */
+            border-radius: 50%; /* Makes the image circular */
+            display: block;
+            margin: 0 auto 10px; /* Centers the image and adds space below */
+        }
+        
+        .testimonial h3 {
+            font-size: 1.1em;
+            margin: 10px 0 5px;
+        }
+        
+        .testimonial p {
+            font-size: 0.95em;
+            color: #555;
+        }
+    </style>
+    
+    <div class="testimonial">
+        <img src="john-d-image.jpg" class="testimonial-img" />
+        <h3>John D. - Small Business Owner</h3>
+        <p>"EvoBank has been a game changer for my business. The streamlined banking process allows me to manage my finances quickly and securely. The online platform is so user-friendly that I can easily track expenses, make payments, and even access financial advice right at my fingertips."</p>
+    </div>
+    
+    <div class="testimonial">
+        <img src="linda-t-image.jpg" class="testimonial-img" />
+        <h3>Linda T. - Entrepreneur</h3>
+        <p>"As an entrepreneur, I rely on fast, secure transactions, and EvoBank's digital platform delivers exactly that. From seamless international transfers to easy loan applications, they’ve made managing my business finances effortless."</p>
+    </div>
+    
+    <div class="testimonial">
+        <img src="michael-r-image.jpg" class="testimonial-img" />
+        <h3>Michael R. - Digital Nomad</h3>
+        <p>"I travel frequently for work and need a bank that’s accessible anywhere. EvoBank’s online services are fast, secure, and available 24/7. I love that I can check my account, transfer money, and even chat with support agents, all from my phone!"</p>
+    </div>
+    
+    <div class="testimonial">
+        <img src="susan-w-image.jpg" class="testimonial-img" />
+        <h3>Susan W. - Student</h3>
+        <p>"As a student, managing finances can be tricky, but EvoBank makes it so much easier. The budgeting tools and educational resources have helped me stay on top of my expenses, and the customer service team is always available when I need help."</p>
+    </div>
+    
+    <div class="testimonial">
+        <img src="david-m-image.jpg" class="testimonial-img" />
+        <h3>David M. - Retiree</h3>
+        <p>"I’ve been with EvoBank for several years now, and I can honestly say it’s the best banking experience I’ve ever had. The retirement planning tools have helped me manage my savings efficiently, and their personal customer service makes me feel valued every time I call."</p>
+    </div>
+</section>
+
+</body>
+</html>
